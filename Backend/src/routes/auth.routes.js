@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require('../models/user.model')
 const Wallet = require('../models/wallet.model')
 const bcrypt = require('bcrypt');
+const verify = require('../middleware/auth.middleware')
+const jwt = require('jsonwebtoken');
 
 
 // signup route
@@ -44,7 +46,25 @@ router.post('/signup', async (req, res) => {
         user.wallet = wallet._id; // linking wallet with user
         await user.save();
 
-        res.status(201).json({ message: "User created successfully" });
+        const token = jwt.sign({
+                id: user._id, // create token after user creation
+                name: user.name,
+                email: user.email
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' });
+
+        res.status(200).json({
+            message: "User created successfully",
+            token, // send token with the response
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                address: user.address
+            }
+        });
 
     } catch (err) {
         res.status(400).json({ message: err.message });
@@ -52,7 +72,7 @@ router.post('/signup', async (req, res) => {
 })
 
 // login route
-router.post('/login', async (req,res)=>{
+router.post('/login',verify, async (req,res)=>{
 
     try{
         // email and pass, if anything of two missing return
