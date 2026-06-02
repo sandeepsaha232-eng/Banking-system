@@ -53,7 +53,7 @@ router.post('/signup', async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '7d' });
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "User created successfully",
             token, // send token with the response
             user: {
@@ -102,7 +102,7 @@ router.post('/login', async (req,res)=>{
             { expiresIn: '7d' });
 
         // if login successfull return userdata
-        res.json({
+        return res.json({
             message: "login successful",
             token, // send token with the response
             user: {
