@@ -13,6 +13,9 @@ connectDB();
 const authRoute = require('./routes/auth.routes');
 const walletRoute = require('./routes/wallet.routes')
 
+app.use('/api/auth',authRoute);
+app.use('/api/wallet',walletRoute);
+
 app.listen(PORT,()=>{
   console.log(`server is running on http://localhost:${PORT}`)
 })
@@ -20,7 +23,4 @@ app.listen(PORT,()=>{
 app.get('/', (req, res) => {
   res.send('server is running');
 })
-
-app.use('/api/auth',authRoute);
-app.use('/api/wallet',walletRoute);
 
