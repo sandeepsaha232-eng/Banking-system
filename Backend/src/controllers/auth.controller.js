@@ -12,7 +12,7 @@ const register =  async (req, res) => {
         // if any of the field is missing return
         if(!name || !email || !password || !phone || !address){
             return res.json({message : "all fields are required"})
-        }
+        }   
         
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -48,6 +48,14 @@ const register =  async (req, res) => {
             },
             process.env.JWT_SECRET,
             { expiresIn: '7d' });
+
+            res.cookie("token", token, {
+                 httpOnly: true ,
+                 maxAge: 7 * 24 * 60 * 60 * 1000,
+                 secure:false
+            });
+
+
 
         return res.status(200).json({
             message: "User created successfully",
@@ -96,6 +104,12 @@ const login =  async (req,res)=>{
             process.env.JWT_SECRET,
             { expiresIn: '7d' });
 
+            res.cookie("token", token, {
+                 httpOnly: true ,
+                 maxAge: 7 * 24 * 60 * 60 * 1000,
+                 secure:false
+            });
+
         // if login successfull return userdata
         return res.json({
             message: "login successful",
@@ -114,5 +128,9 @@ const login =  async (req,res)=>{
     }
 
 }
+const logout = async (req, res) => {
+    res.clearCookie('token');
+    return res.json({ message: "Logged out successfully" });
+}
 
-module.exports = {register,login};
+module.exports = {register,login,logout};

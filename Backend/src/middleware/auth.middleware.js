@@ -2,7 +2,7 @@
 
  const authMiddleware = (req,res,next)=>{
 
-    const token = req.header('Authorization').split(" ")[1];
+    const token = req.cookies.token;
 
     if(!token){
         return res.status(401).json({ message: 'Invalid user' });
