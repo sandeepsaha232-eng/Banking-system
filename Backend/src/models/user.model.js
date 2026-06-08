@@ -45,11 +45,15 @@ const User = new Schema({
         type:String,
         default:null
     },
+
+    // if the user is not verified it's residual data must be deleted
     otpCreatedAt: {
         type: Date,
         default: Date.now,
         index: { expires: '10m' } // Automatically deletes the user document after 10 minutes if not verified
     }
+
+    // index : TTL index (time to live) : it deletes the document after specified time
 
 },{timestamps:true});
 
