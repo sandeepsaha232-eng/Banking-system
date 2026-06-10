@@ -12,6 +12,6 @@ router.post('/signup', register);
 router.post('/login', login);
 
 // otp verification route
-router.post('/otp',verify ,verifyOtp);
+router.post('/otp',verifyOtp);
 
 module.exports = router;

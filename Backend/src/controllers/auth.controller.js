@@ -114,6 +114,9 @@ const login =  async (req,res)=>{
         if(!user){
             return res.status(404).json({message:"user not found"})
         }
+        if(!user.isVerified){
+            return res.status(401).json({message:"user not verified"})
+        }
 
         const isMatch = await bcrypt.compare(password,user.password); // bcrypt to compare the hashed password
         if(!isMatch){
