@@ -2,7 +2,12 @@
 
  const authMiddleware = (req,res,next)=>{
 
-    const token = req.header('Authorization').split(" ")[1];
+    const Auth = req.header('Authorization');
+    
+    if (!Auth || !Auth.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Unauthorized Access' });
+    }
+    const token = Auth.split(" ")[1];
 
     if(!token){
         return res.status(401).json({ message: 'Invalid user' });
