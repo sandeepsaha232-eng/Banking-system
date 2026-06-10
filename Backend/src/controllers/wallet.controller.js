@@ -1,4 +1,6 @@
 const Wallet = require('../models/wallet.model');
+const {depositMail} = require('../services/email.services');
+
 
 const balance =  async (req, res) => {
 
@@ -20,7 +22,7 @@ const balance =  async (req, res) => {
     }
 }
 
-const topup = async (req, res) => {
+const deposit = async (req, res) => {
 
     try {
         // userID and amout from token
@@ -40,6 +42,8 @@ const topup = async (req, res) => {
         userWallet.balance += amount; // addition of balance
         await userWallet.save();
 
+        depositMail(userWallet.userId.email,amount);
+
         return res.json({ balance: userWallet.balance });
 
     } catch (error) {
@@ -48,4 +52,4 @@ const topup = async (req, res) => {
     }
 };
 
-module.exports = { balance, topup };
+module.exports = { balance, deposit };

@@ -2,6 +2,9 @@ const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const Wallet = require('../models/wallet.model')
 const bcrypt = require('bcrypt');
+const {sendOTPEmail,generateOTP} = require('../services/authMail.services');
+const {loginMail} = require('../services/email.services');
+
 
 const register =  async (req, res) => {
 
@@ -19,26 +22,21 @@ const register =  async (req, res) => {
             return res.status(400).json({ message: "User already exists" });
         }
 
+        const otp = generateOTP(); // generate the otp
+
+        sendOTPEmail(email,otp); // otp sent to the mail
+        
         const user = new User({
             name,
             email,
             password : await bcrypt.hash(password,10), // hashing the password using bcrypt with salt rounds of 10
             wallet: null, // wallet will be created after the user is created
             phone,
-            address
+            address,
+            otp, // store otp temporarily to verify
         });
 
-        await user.save();
-
-        // creating wallet for the user
-        const wallet = new Wallet({
-            userId: user._id,
-            balance: 0,
-            transactions: []
-        });
-
-        await wallet.save();
-        user.wallet = wallet._id; // linking wallet with user
+        // if otp is not verified withing the given time the user shall be deleted from the db
         await user.save();
 
         const token = jwt.sign({
@@ -58,7 +56,7 @@ const register =  async (req, res) => {
 
 
         return res.status(200).json({
-            message: "User created successfully",
+            message: "User created successfully : verify otp to connect wallet",
             token, // send token with the response
             user: {
                 id: user._id,
@@ -72,6 +70,40 @@ const register =  async (req, res) => {
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
+}
+
+const verifyOtp = async (req,res) => {
+
+    const {otp,email}= req.body;
+
+    if(!otp || !email){
+        return res.status(400).json({message:"invalid fields"});
+    }
+
+    const user = await User.findOne({email});
+
+    const storedOtp = user.otp;
+
+    if(storedOtp === otp){
+
+        const wallet = new Wallet({
+            userId: user._id,
+            balance: 0,
+            transactions: []
+        });
+
+        await wallet.save();
+        user.wallet = wallet._id; // linking wallet with user
+        user.isVerified = true;
+        user.otp = null;
+        user.otpCreatedAt = null;
+        await user.save();
+    }
+    else{
+        return res.status(401).json({message:"invalid otp"});
+    };
+
+    return res.status(200).json({message:"otp verified"});
 }
 
 const login =  async (req,res)=>{
@@ -89,6 +121,9 @@ const login =  async (req,res)=>{
 
         if(!user){
             return res.status(404).json({message:"user not found"})
+        }
+        if(!user.isVerified){
+            return res.status(401).json({message:"user not verified"})
         }
 
         const isMatch = await bcrypt.compare(password,user.password); // bcrypt to compare the hashed password
@@ -110,6 +145,8 @@ const login =  async (req,res)=>{
                  secure:false
             });
 
+        loginMail(user.email);
+        
         // if login successfull return userdata
         return res.json({
             message: "login successful",
@@ -133,4 +170,4 @@ const logout = async (req, res) => {
     return res.json({ message: "Logged out successfully" });
 }
 
-module.exports = {register,login,logout};
+module.exports = {register,login,logout,verifyOtp};
