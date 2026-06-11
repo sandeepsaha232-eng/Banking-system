@@ -24,7 +24,11 @@ const register =  async (req, res) => {
 
         const otp = generateOTP(); // generate the otp
 
-        sendOTPEmail(email,otp); // otp sent to the mail
+        try{
+            await sendOTPEmail(email,otp); // otp sent to the mail
+        } catch(err){
+            return res.status(500).json({message: 'Failed to send the otp ' + err.message});
+        }
         
         const user = new User({
             name,
@@ -33,7 +37,8 @@ const register =  async (req, res) => {
             wallet: null, // wallet will be created after the user is created
             phone,
             address,
-            otp, // store otp temporarily to verify
+            otp : await bcrypt.hash(otp,10), // store otp temporarily to verify in hashed form for securtity
+            otpCreatedAt : new Date() // to manually check for the age of otp
         });
 
         // if otp is not verified withing the given time the user shall be deleted from the db
@@ -52,7 +57,6 @@ const register =  async (req, res) => {
                  maxAge: 7 * 24 * 60 * 60 * 1000,
                  secure:false
             });
-
 
 
         return res.status(200).json({
@@ -74,36 +78,71 @@ const register =  async (req, res) => {
 
 const verifyOtp = async (req,res) => {
 
-    const {otp,email}= req.body;
+    const {otp,email}= req.body; // email and otp from the body to verify the user
 
-    if(!otp || !email){
+    if(!otp || !email){ // if any of the field is missing process should be stopped
         return res.status(400).json({message:"invalid fields"});
     }
 
     const user = await User.findOne({email});
 
-    const storedOtp = user.otp;
-
-    if(storedOtp === otp){
-
-        const wallet = new Wallet({
-            userId: user._id,
-            balance: 0,
-            transactions: []
+    // user may have been deleted after 10 minutes because of TTL indexes or email may be wrong
+    if(!user) {
+        return res.status(404).json({
+             message: 'User not found or OTP session expired. Please register again.'
         });
-
-        await wallet.save();
-        user.wallet = wallet._id; // linking wallet with user
-        user.isVerified = true;
-        user.otp = null;
-        user.otpCreatedAt = null;
-        await user.save();
     }
-    else{
-        return res.status(401).json({message:"invalid otp"});
-    };
 
-    return res.status(200).json({message:"otp verified"});
+    if(user.isVerified){ // if the user is already verified, there is no need od verification
+        return res.status(400).json({message:"user is already verified"}); /*this situation might never occur becuase this will
+                                                                             be done only once at the time of signup 
+                                                                             but just for security a fallback has been added*/
+    }
+
+
+    // manual checking for otp expiration 
+    const otpAge = Date.now() - new Date(user.otpCreatedAt).getTime(); // get the time of otp created 
+
+    if (otpAge > 10*60*1000) { // if the age of otp is greater than 10 minutes then.. otp must have expired
+        return res.status(400).json({
+             message: 'OTP has expired, please signup again' // the signup process shall be restarted because the data is no longer ther in db 
+        });
+    }
+
+    // check for the otp if it is correct or not
+    const isOtpValid = bcrypt.compare(otp, user.otp);
+        
+    if (!isOtpValid) {
+        return res.status(401).json({ message: 'Invalid OTP' });
+    }
+
+    // attach the wallet to the user if everythings good
+    const wallet = new Wallet({
+        userId: user._id,
+        balance: 0,
+        transactions: []
+    });
+
+    await wallet.save();
+
+    /* change the user data accordingly : wallet attached, 
+    otp and otpCreatedAt : nullified -> if not done user will be deleted due to ttl index */
+    user.wallet = wallet._id;
+    user.isVerified = true;
+    user.otp = null;
+    user.otpCreatedAt = null;
+    await user.save();
+
+    return res.status(200).json({
+        message: "OTP verified successfully and wallet connected",
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            isVerified: user.isVerified,
+            wallet: user.wallet
+        }
+    });
 }
 
 const login =  async (req,res)=>{

@@ -2,7 +2,8 @@
 
  const authMiddleware = (req,res,next)=>{
 
-    const token = req.cookies.token;
+    // support for both the cookies and bearer token for postman 
+    const token = req.cookies?.token || req.header('Authorization')?.split(" ")[1];
 
     if(!token){
         return res.status(401).json({ message: 'Invalid user' });

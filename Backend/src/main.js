@@ -20,11 +20,12 @@ const walletRoute = require('./routes/wallet.routes')
 app.use('/api/auth',authRoute);
 app.use('/api/wallet',walletRoute);
 
+app.get('/', (req, res) => {
+  res.send('server is running');
+})
+
 app.listen(PORT,()=>{
   console.log(`server is running on http://localhost:${PORT}`)
 })
 
-app.get('/', (req, res) => {
-  res.send('server is running');
-})
 
