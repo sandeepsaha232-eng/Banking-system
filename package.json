@@ -91,6 +91,7 @@
     "statuses": "^2.0.2",
     "toidentifier": "^1.0.1",
     "type-is": "^2.1.0",
+    "ua-parser-js": "^2.0.10",
     "unpipe": "^1.0.0",
     "vary": "^1.1.2",
     "wrappy": "^1.0.2"

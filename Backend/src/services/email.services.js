@@ -33,7 +33,7 @@ const transactionMail = async ({to,subject,amount,type})=>{
 
 }
 
-const loginMail = async(to,time)=>{
+const loginMail = async(to,systemDetails)=>{
 
     const mailOptions = {
         from: process.env.EMAIL,
@@ -41,7 +41,13 @@ const loginMail = async(to,time)=>{
         subject: "login detected",
         html : `<div style="font-family: Arial; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
                     <h2 style="color: #03a9f4;">login detected</h2>
-                    <p>Successfully logged in to your account at ${time}</p>
+                    <p>Successfully logged in to your account at ${systemDetails.time} on <strong style="color: #bc03f4ff;">${systemDetails.browser}</strong></p>
+                    <h3 style="color: #f4a803ff;">Device Details</h3>
+                    <p>Device : ${systemDetails.device.device.model}</p>
+                    <p>OS : ${systemDetails.device.os.name}</p>
+                    <p>Browser : ${systemDetails.device.browser.name}</p>
+                    <p>IP : ${systemDetails.ip}</p>
+                    <p>Time : ${systemDetails.time}</p>
                     <p>Thank you for using GBI.</p>
                 </div>`
     }
@@ -65,7 +71,11 @@ const depositMail = async(to,amount)=>{
         from: process.env.EMAIL,
         to: to,
         subject: "Deposited amount",
-        text : `Your amount of ${amount} has been deposited successfully`
+        html : `<div style="font-family: Arial; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
+                    <h2 style="color: #03a9f4;">Amount deposited</h2>
+                    <p>Successfully desposited ${amount} to your account at ${time}</p>
+                    <p>Thank you for using GBI.</p>
+                </div>`
     }
 
     try{

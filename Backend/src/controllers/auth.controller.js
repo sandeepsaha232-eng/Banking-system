@@ -4,6 +4,7 @@ const Wallet = require('../models/wallet.model')
 const bcrypt = require('bcrypt');
 const {sendOTPEmail,generateOTP} = require('../services/authMail.services');
 const {loginMail} = require('../services/email.services');
+const uaParser = require('ua-parser-js');
 
 
 const register =  async (req, res) => {
@@ -190,7 +191,19 @@ const login =  async (req,res)=>{
                  secure:false
             });
 
-        loginMail(user.email,new Date().toLocaleString());
+
+        const userAgent = req.headers['user-agent'];
+        const device = (new uaParser(userAgent)).getResult();
+
+        const systemDetails = {
+            browser: device.browser,
+            os: device.os,
+            device: device,
+            ip : req.ip,
+            time : new Date().toLocaleString()
+        }
+
+        loginMail(user.email,systemDetails);
         
         // if login successfull return userdata
         return res.json({
