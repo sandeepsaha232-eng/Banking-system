@@ -16,9 +16,12 @@ connectDB();
 
 const authRoute = require('./routes/auth.routes');
 const walletRoute = require('./routes/wallet.routes')
+const transactionRoute = require('./routes/transaction.routes')
 
 app.use('/api/auth',authRoute);
 app.use('/api/wallet',walletRoute);
+app.use('/api/transaction',transactionRoute);
+
 
 app.get('/', (req, res) => {
   res.send('server is running');

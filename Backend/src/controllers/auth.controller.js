@@ -190,7 +190,7 @@ const login =  async (req,res)=>{
                  secure:false
             });
 
-        loginMail(user.email);
+        loginMail(user.email,new Date().toLocaleString());
         
         // if login successfull return userdata
         return res.json({

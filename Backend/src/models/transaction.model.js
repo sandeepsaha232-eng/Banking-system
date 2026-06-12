@@ -15,6 +15,14 @@ const transaction = new Schema({
         type: Number,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
+    txnRef: {
+        type: String,
+        required: true
+    },
     // sender details
     senderId: {
         type: Schema.Types.ObjectId,
