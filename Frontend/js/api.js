@@ -16,14 +16,14 @@ async function request(path, options = {}) { // path will specify the url and op
 
         if (res.status === 401) { // if there is any error fallback to login page
             localStorage.clear();
-            window.location.href = '/login.html';
+            window.location.href = './login.html';
             return;
         }
 
-        return { ok: res.ok, status: res.status, data }; // if everything is okay return the data to the caller method of respective page
+        return { success : data.success || true, status: res.status, data }; // if everything is okay return the data to the caller method of respective page
 
     } catch (err) {
-        return { ok: false, data: { message: 'error occured ' + err.message } };
+        return { success: false, data: { message: 'error occured ' + err.message } };
     }
 }
 

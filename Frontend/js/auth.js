@@ -1,4 +1,4 @@
-// all the authentication job will be passed from here
+// all the authentication api will be passed from here
 
 /*  
     All the core authentication APIs are written here,
@@ -39,16 +39,4 @@ async function login(email,password){
         method : 'POST',
         body : JSON.stringify({email,password})
     });
-}
-
-// for logout
-// clears the cookie on server, clears localStorage on user side
-async function logout(){
-
-    await request('/auth/logout',{ // request sent to clear cookie from server
-        method : 'POST',
-    })
-
-    localStorage.clear(); // clears the cookie from the local storage
-    window.location.href = '/login.html' 
 }

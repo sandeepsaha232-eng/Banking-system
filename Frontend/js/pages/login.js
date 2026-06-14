@@ -1,3 +1,7 @@
+if(sessionStorage.getItem('userEmail')){
+    document.getElementById('email').value = sessionStorage.getItem('userEmail');
+}
+
 document.getElementById('loginBtn').addEventListener('click', async ()=>{
 
     const email = document.getElementById('email').value.trim();
@@ -9,7 +13,8 @@ document.getElementById('loginBtn').addEventListener('click', async ()=>{
 
     const res = await login(email,password);
 
-    if(res && res.ok){
+    if(res && res.success){
+        sessionStorage.setItem('userEmail',email);
         window.location.href = './dashboard.html';
     }
     else{

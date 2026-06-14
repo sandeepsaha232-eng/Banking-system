@@ -56,7 +56,8 @@ const register =  async (req, res) => {
             res.cookie("token", token, {
                  httpOnly: true ,
                  maxAge: 7 * 24 * 60 * 60 * 1000,
-                 secure:false
+                 secure:false,
+                 sameSite: 'lax'
             });
 
 
@@ -113,7 +114,6 @@ const verifyOtp = async (req,res) => {
         }
     
         // check for the otp if it is correct or not
-        console.log(user.otp);
         const isOtpValid = await bcrypt.compare(otp, user.otp);
             
         if (!isOtpValid) {
@@ -188,7 +188,8 @@ const login =  async (req,res)=>{
             res.cookie("token", token, {
                  httpOnly: true ,
                  maxAge: 7 * 24 * 60 * 60 * 1000,
-                 secure:false
+                 secure:false,
+                 sameSite: 'lax'
             });
 
 
@@ -208,7 +209,6 @@ const login =  async (req,res)=>{
         // if login successfull return userdata
         return res.json({
             message: "login successful",
-            token, // send token with the response
             user: {
                 id: user._id,
                 name: user.name,

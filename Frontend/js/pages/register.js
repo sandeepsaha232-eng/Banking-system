@@ -10,10 +10,10 @@ document.getElementById('registerBtn').addEventListener('click',async ()=>{
         return alert('all fields are required');
     }
 
-    const res = await register(name,email,password,phone,address);
+    const res = await register(name,email,password,phone,address); // fields from the user
 
-    if(res && res.ok){
-        sessionStorage.setItem('otpEmail',email);
+    if(res && res.success){
+        sessionStorage.setItem('otpEmail',email);  // storing userEmail in session storage to further verify the otp
         window.location.href = './verify-otp.html';
     }
     else{

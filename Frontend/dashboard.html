@@ -4,10 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="./js/gaurd.js"></script>
 </head>
 <body>
     <div>
-        This is the dashboard
+        <h1>Welcome to your Account</h1>
+        <p>Email: <span id="userEmail"></span></p>
+        <nav>
+            <a href="wallet.html">Wallet</a>&nbsp;
+            <button id="logoutBtn">Logout</button>
+            &nbsp;
+            <button id="topupWallet">Add Funds to Wallet</button>
+        </nav> 
+        <br>
+        <button id="checkBalanceBtn">Check balance</button>
+        <p id="balance"></p>
+
+        <h4><a href="send-money.html">Send Money</a></h4>
+
+        <h3>Recent Transactions</h3>
+        <ul id="transactionList">
+
+        </ul>
+
+        <a href="wallet.html">View All Transactions</a>
+        <script src="./js/api.js"></script>
+        <script src="./js/utils.js"></script>
+        <script src="./js/pages/dashboard.js"></script>
     </div>
 </body>
 </html>

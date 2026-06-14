@@ -1,4 +1,4 @@
-const email = sessionStorage.getItem('otpEmail');
+const email = sessionStorage.getItem('otpEmail'); // otpEmail from sessionStorage
 
 document.getElementById('submitOtp').addEventListener('click',async ()=>{
 
@@ -10,7 +10,9 @@ document.getElementById('submitOtp').addEventListener('click',async ()=>{
 
     const res = await verifyOtp(otp,email);
 
-    if(res && res.ok){
+    if(res && res.success){
+        sessionStorage.setItem('userEmail',email); // basically renaming the user Email
+        sessionStorage.removeItem('otpEmail');
         window.location.href = './login.html';
     }
     else{

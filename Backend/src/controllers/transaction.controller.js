@@ -13,7 +13,7 @@ const sendMoney = async (req, res) => {
 
         session.startTransaction(); // start of transaction
 
-        const {email : receiverMail,amount : rawAmount,description : note} = req.body; // reciever mail and amount from the input
+        const {receiverEmail,amount : rawAmount,note} = req.body; // reciever mail and amount from the input
                                                                         // optional description for note
         const senderId = req.user.id; // sender Id from the cookies
 
@@ -23,7 +23,7 @@ const sendMoney = async (req, res) => {
 
         const amount = Number(rawAmount); // conversion of amount from string to number
 
-        if(!receiverMail || !amount){
+        if(!receiverEmail || !amount){
             throw new Error("invalid fields"); // if any of the field is missing error should be thrown
         }
 
@@ -32,7 +32,7 @@ const sendMoney = async (req, res) => {
         }
 
         // search for recievers id
-        const receiver = await User.findOne({email:receiverMail}).session(session);
+        const receiver = await User.findOne({email:receiverEmail}).session(session);
 
         if(!receiver){
             throw new Error("receiver not found : invalid reciever mail or user may not exist");
@@ -96,7 +96,7 @@ const sendMoney = async (req, res) => {
 
         await session.commitTransaction();
 
-        // Send notifications outside the transaction commit
+        // Send notifications to both sender and receiver 
         transactionMail({
             to: req.user.email,
             subject: "Money Sent",
@@ -105,27 +105,62 @@ const sendMoney = async (req, res) => {
         });
 
         transactionMail({
-            to: receiverMail,
+            to: receiverEmail,
             subject: "Money Received",
             amount: amount,
             type: 'credit'
         });
 
         return res.status(200).json({
+            success: true,
             message: "Transaction successful",
+            sender : req.user.email,
+            receiverEmail,
+            description,
             txnRef,
-            amount
+            amount,
         });
 
-    } catch(error) {
+    } catch (error) {
         
         await session.abortTransaction();
-        console.error(error);
-        return res.status(500).json({message:error.message});
+        return res.status(500).
+                    json({message:error.message
+                        ,success:false
+                    });
 
     } finally {
         session.endSession();
     }
 }
 
-module.exports = {sendMoney};
+const getTransactions = async (req, res) => {
+
+    try {
+        const userId = req.user.id;
+    
+        if(!userId){
+            return res.status(401).json({message:"unauthorized user"});
+        }
+
+        const Wallet = await wallet.findOne({userId});
+
+        if(!Wallet){
+            return res.status(404).json({message:"wallet not found"});
+        }
+
+        const transactions = await transaction.find({walletId:Wallet._id});
+
+        if(!transactions){
+            return res.status(404).json({message:"no transactions yet"});
+        }
+
+        return res.status(200).json({transactions});
+
+    } catch(err){
+        return res.status(500).json({message:err.message});
+    }
+
+}
+
+module.exports = {sendMoney,getTransactions};

@@ -7,7 +7,6 @@ const balance =  async (req, res) => {
     try {
 
         const userId = req.user.id; 
-
         const userWallet = await Wallet.findOne({ userId });
 
         if (!userWallet) {
