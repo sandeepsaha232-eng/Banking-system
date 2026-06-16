@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'http://127.0.0.1:3000/api';
 
 // central API request : all the request will be sent through this API
 
@@ -15,8 +15,9 @@ async function request(path, options = {}) { // path will specify the url and op
         const data = await res.json();
 
         if (res.status === 401) { // if there is any error fallback to login page
-            localStorage.clear();
-            window.location.href = './login.html';
+            console.log(res);
+            sessionStorage.clear();
+            // window.location.href = './login.html';
             return;
         }
 

@@ -1,5 +1,6 @@
 const Wallet = require('../models/wallet.model');
 const {depositMail} = require('../services/email.services');
+const transaction = require('../models/transaction.model');
 
 
 const balance =  async (req, res) => {
@@ -26,9 +27,10 @@ const deposit = async (req, res) => {
     try {
         // userID and amout from token
         const userId = req.user.id;
-        const { amount } = req.body; 
+        const { amount : rawAmount} = req.body; 
+        const {email} = req.user;
 
-        if (!amount || amount <= 0) { // validation of enetred amount
+        if (!rawAmount || rawAmount <= 0) { // validation of enetred amount
             return res.status(400).json({ message: "Invalid amount" });
         }
 
@@ -37,11 +39,31 @@ const deposit = async (req, res) => {
         if (!userWallet) {
             return res.status(404).json({ message: "Wallet not found" });
         }
+        const amount = Number(rawAmount);
 
         userWallet.balance += amount; // addition of balance
+
+        const txnRef = 'TXN'+amount+'DEP'+Date.now();
+
+        const time = new Date().toLocaleString();
+
+        const depositTransaction = new transaction({
+                    walletId : userWallet._id,
+                    amount,
+                    description : 'deposited funds successfully',
+                    txnRef,
+                    senderId : userId,
+                    receiverId : userId,
+                    type : 'deposit',
+                    date : new Date()
+                });
+
+        await depositTransaction.save();
+        userWallet.transactions.push(depositTransaction._id);
+
         await userWallet.save();
 
-        depositMail(userWallet.userId.email,amount);
+        depositMail(email,amount,time);
 
         return res.json({ balance: userWallet.balance });
 

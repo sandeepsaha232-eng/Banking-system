@@ -3,11 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>wallet</title>
+    <style>
+        .transaction-card{
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            width: fit-content;
+        }
+        .credit{
+            box-shadow: 0 2px 5px rgba(192, 255, 192, 0.6);
+            background-color: rgba(224, 255, 224, 0.6);
+        }
+        .credit:hover {
+            transition: transform 0.2s ease-in-out;
+            background-color: rgba(191, 249, 191, 0.92);
+            transform: scale(1.03);
+            cursor: pointer;
+        }
+        .debit:hover {
+            transition: transform 0.2s ease-in-out;
+            background-color: rgba(255, 191, 191, 0.92);
+            transform: scale(1.03);
+            cursor: pointer;
+        }
+        .debit{
+            box-shadow: 0 2px 5px rgba(255, 192, 192, 0.6);
+            background-color: rgba(255, 224, 224, 0.6);
+        }
+        .deposit{
+            box-shadow: 0 2px 5px rgba(192, 234, 255, 0.6);
+            background-color: rgba(192, 234, 255, 0.6);
+        }
+        .deposit:hover {
+            transition: transform 0.2s ease-in-out;
+            background-color: rgba(191, 234, 255, 0.92);
+            transform: scale(1.03);
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div>
-        This is the wallet
+        <h2>Your Wallet summary</h2>
+        <p id="userEmail"></p>
+        <a href="dashboard.html">dashboard</a>
+        <div class="wallet-summary">
+            <h4 id="currentBalance">Current Balance</h4>
+
+            <h4>Add Funds</h4>
+            <input type="number" id="amount" placeholder="Enter amount" />
+            <button id="addFundsBtn">Add Funds</button>
+
+            <h3>Transaction History : </h3>
+
+            <div id="transactionHistory">
+                No transactions found.
+            </div>
+
+        </div>
     </div>
+    <script src="./js/api.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/pages/wallet-page.js"></script>
 </body>
 </html>

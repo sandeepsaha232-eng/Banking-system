@@ -32,7 +32,6 @@ async function verifyOtp(otp,email){
 }
 
 // for login
-
 async function login(email,password){
     
     return request('/auth/login',{

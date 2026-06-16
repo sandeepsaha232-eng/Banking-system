@@ -27,7 +27,6 @@ async function depositMoney(amount) {
 
 //get transactions history
 async function transactionHistory(){
-
     return request('/transaction/history',{
         method : 'GET'
     })

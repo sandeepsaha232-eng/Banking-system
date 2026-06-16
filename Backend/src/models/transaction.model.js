@@ -36,7 +36,7 @@ const transaction = new Schema({
     },
     type: {
         type: String,
-        enum: ['credit', 'debit'], // enum for the definition of type of transaction
+        enum: ['credit', 'debit', 'deposit'], // enum for the definition of type of transaction
         required: true
     },
     date: {

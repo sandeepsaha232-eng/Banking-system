@@ -223,6 +223,7 @@ const login =  async (req,res)=>{
     }
 
 }
+
 const logout = async (req, res) => {
     res.clearCookie('token');
     return res.json({ message: "Logged out successfully" });

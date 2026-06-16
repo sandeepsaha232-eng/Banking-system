@@ -65,7 +65,7 @@ const loginMail = async(to,systemDetails)=>{
 
 }
 
-const depositMail = async(to,amount)=>{
+const depositMail = async(to,amount,time)=>{
 
     const mailOptions = {
         from: process.env.EMAIL,
@@ -73,7 +73,12 @@ const depositMail = async(to,amount)=>{
         subject: "Deposited amount",
         html : `<div style="font-family: Arial; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
                     <h2 style="color: #03a9f4;">Amount deposited</h2>
-                    <p>Successfully desposited ${amount} to your account at ${time}</p>
+                <div style="font-size: 18px; margin: 20px 0; padding: 10px; background-color: #f9f9f9; border-left: 5px solid #28a745;">
+                    Amount: <strong>${amount}</strong>
+                </div>
+                <div>
+                    Time : ${time}
+                </div>
                     <p>Thank you for using GBI.</p>
                 </div>`
     }
