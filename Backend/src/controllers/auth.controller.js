@@ -56,7 +56,7 @@ const register =  async (req, res) => {
             res.cookie("token", token, {
                  httpOnly: true ,
                  maxAge: 7 * 24 * 60 * 60 * 1000,
-                 secure:false,
+                 secure:true, // if samesite : none and this as false, then cookies get dropped from the req
                  sameSite: 'none'
             });
 
@@ -187,7 +187,7 @@ const login =  async (req,res)=>{
             res.cookie("token", token, {
                  httpOnly: true ,
                  maxAge: 7 * 24 * 60 * 60 * 1000,
-                 secure:false,
+                 secure:true,
                  sameSite: 'none'
             });
 
