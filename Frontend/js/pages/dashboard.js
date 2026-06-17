@@ -32,6 +32,10 @@ history(); // autopopulate the history of transactions in main dashboard
 
 function showTransactionHistory(transaction) {
 
+    if (!transaction.transactions || transaction.transactions.length === 0) {
+        transactionList.innerHTML = '<h3>No transactions yet !</h3>';
+        return;
+    }
     const transactionList = document.getElementById('transactionList');
 
     transactionList.innerHTML = '';

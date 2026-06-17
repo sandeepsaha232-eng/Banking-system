@@ -21,7 +21,7 @@ async function request(path, options = {}) { // path will specify the url and op
             return;
         }
 
-        return { success : data.success || true, status: res.status, data }; // if everything is okay return the data to the caller method of respective page
+        return { success: res.ok, status: res.status, data }; // if everything is okay return the data to the caller method of respective page
 
     } catch (err) {
         return { success: false, data: { message: 'error occured ' + err.message } };

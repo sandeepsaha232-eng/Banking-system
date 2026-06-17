@@ -4,7 +4,7 @@ document.getElementById('userEmail').textContent = 'user' + email;
 
 const balanceField = document.getElementById('currentBalance');
 const history = document.getElementById('transactionHistory');
-(async function showBalance(){
+async function showBalance(){
     const balance = await checkBalance();
     
     if(balance && balance.success){ 
@@ -15,7 +15,8 @@ const history = document.getElementById('transactionHistory');
         balanceField.textContent = 'could not fetch the balance :' + balance.data.message;
         balanceField.style.color = 'red';
     }
-})()
+}
+showBalance();
 
 async function showTransaction(){
     const transactions = await transactionHistory();
@@ -72,4 +73,5 @@ document.getElementById('addFundsBtn').addEventListener('click',async ()=>{
     }
 
     showTransaction();
+    showBalance();
 })

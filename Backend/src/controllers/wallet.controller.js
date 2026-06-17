@@ -1,6 +1,7 @@
 const Wallet = require('../models/wallet.model');
 const {depositMail} = require('../services/email.services');
 const transaction = require('../models/transaction.model');
+const mongoose = require('mongoose');
 
 
 const balance =  async (req, res) => {
@@ -24,31 +25,31 @@ const balance =  async (req, res) => {
 
 const deposit = async (req, res) => {
 
+    const session = await mongoose.startSession(); // using sessions for tracking the deposit transaction and atomicity
+    
     try {
-        // userID and amout from token
+        session.startTransaction(); // start of transaction
+
         const userId = req.user.id;
         const { amount : rawAmount} = req.body; 
         const {email} = req.user;
+        const amount = Number(rawAmount);
 
-        if (!rawAmount || rawAmount <= 0) { // validation of enetred amount
+        if (!amount || amount <= 0) { // validation of enetred amount
+            await session.abortTransaction();
             return res.status(400).json({ message: "Invalid amount" });
         }
 
-        const userWallet = await Wallet.findOne({ userId });
+        // in this method we have 3 seperate steps read-modify-write : violates ACID
 
-        if (!userWallet) {
-            return res.status(404).json({ message: "Wallet not found" });
-        }
-        const amount = Number(rawAmount);
-
-        userWallet.balance += amount; // addition of balance
+        // userWallet.balance += amount; // addition of balance
 
         const txnRef = 'TXN'+amount+'DEP'+Date.now();
 
         const time = new Date().toLocaleString();
 
         const depositTransaction = new transaction({
-                    walletId : userWallet._id,
+                    walletId : null, // to be set after depositiing successfully
                     amount,
                     description : 'deposited funds successfully',
                     txnRef,
@@ -58,18 +59,37 @@ const deposit = async (req, res) => {
                     date : new Date()
                 });
 
-        await depositTransaction.save();
-        userWallet.transactions.push(depositTransaction._id);
+        // using $inc to avoid read-modify-write : better practice
+        const updatedWallet = await Wallet.findOneAndUpdate(
+            { userId },
+            {
+                $inc: { balance: amount },
+                $push: { transactions: depositTransaction._id }
+            },
+            { after: true, session }
+        );
 
-        await userWallet.save();
+        if (!updatedWallet) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Wallet not found" });
+        }
+
+        depositTransaction.walletId = updatedWallet._id;
+        await depositTransaction.save({ session });
+
+        await session.commitTransaction();
 
         depositMail(email,amount,time);
 
-        return res.json({ balance: userWallet.balance });
+        return res.json({ balance: updatedWallet.balance });
 
     } catch (error) {
-        console.error(error);
+        console.log(error)
+        await session.abortTransaction();
         return res.status(500).json({ message: error.message });
+    }
+    finally{
+        session.endSession();
     }
 };
 

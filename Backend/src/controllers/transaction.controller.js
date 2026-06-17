@@ -11,6 +11,7 @@ const sendMoney = async (req, res) => {
 
     try {
 
+        // In invalid cases, return response with error instead of throwing and using one handler : easier to identify the errr
         session.startTransaction(); // start of transaction
 
         const {receiverEmail,amount : rawAmount,note} = req.body; // reciever mail and amount from the input
@@ -18,47 +19,56 @@ const sendMoney = async (req, res) => {
         const senderId = req.user.id; // sender Id from the cookies
 
         if(!senderId){
-            throw new Error("unauthorized user : cannot send money");
+            await session.abortTransaction();
+            return res.status(401).json({message:"unauthorized user"});
         }
 
         const amount = Number(rawAmount); // conversion of amount from string to number
 
         if(!receiverEmail || !amount){
-            throw new Error("invalid fields"); // if any of the field is missing error should be thrown
+            await session.abortTransaction();
+            return res.status(400).json({message:"all fields are required"}); // if any of the field is missing error should be thrown
         }
 
         if(amount<=0){ // amount validation
-            throw new Error("invalid amount : amount should be greater than 0");
+            await session.abortTransaction();
+            return res.status(400).json({message:"invalid amount"});
         }
 
         // search for recievers id
         const receiver = await User.findOne({email:receiverEmail}).session(session);
 
         if(!receiver){
-            throw new Error("receiver not found : invalid reciever mail or user may not exist");
+            await session.abortTransaction();
+            return res.status(404).json({message:"user not found"});
         }
 
         const receiverId = receiver._id;
 
         // verify if the sender and receiver are the same
         if(receiverId.toString() === senderId.toString()){
-            throw new Error("cannot send money to the same accounts");
+            await session.abortTransaction();
+            return res.status(400).json({message:"cannot send money to same accounts"});
         }
 
         const senderWallet = await wallet.findOne({userId:senderId}).session(session);
         const receiverWallet = await wallet.findOne({userId:receiverId}).session(session);
 
         if(!senderWallet || !receiverWallet){
-            throw new Error("Wallet not found : user does not exist or may not have been verified")
+            await session.abortTransaction();
+            return res.status(404).json({message:"wallet not found"});
         }
 
         // check for senders wallet before transaction
         if(senderWallet.balance < amount){
-            throw new Error("insufficient account balance")
+            await session.abortTransaction();
+            return res.status(400).json({message:"insufficient balance in your account"});
         }
 
-        senderWallet.balance -= amount;
-        receiverWallet.balance += amount;
+        // not a good practice
+
+        // senderWallet.balance -= amount;
+        // receiverWallet.balance += amount; // not to be used
 
         const txnRef = `TXN${Date.now()}`
         const description = note || `Transaction successful`
@@ -88,11 +98,18 @@ const sendMoney = async (req, res) => {
         await sendTransaction.save({session});
         await receiveTransaction.save({session});
 
-        senderWallet.transactions.push(sendTransaction._id);
-        receiverWallet.transactions.push(receiveTransaction._id);
+        // using atomic $inc + $push  queries instead of read-modify-write on both wallets : better practice
+        await wallet.findByIdAndUpdate(
+            senderWallet._id,
+            { $inc: { balance: -amount }, $push: { transactions: sendTransaction._id } },
+            { session }
+        );
 
-        await senderWallet.save({session});
-        await receiverWallet.save({session});
+        await wallet.findByIdAndUpdate(
+            receiverWallet._id,
+            { $inc: { balance: amount }, $push: { transactions: receiveTransaction._id } },
+            { session }
+        );
 
         await session.commitTransaction();
 
@@ -122,7 +139,7 @@ const sendMoney = async (req, res) => {
         });
 
     } catch (error) {
-        
+        // only geunuine server errors reach here
         await session.abortTransaction();
         return res.status(500).
                     json({message:error.message

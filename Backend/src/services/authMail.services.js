@@ -1,8 +1,9 @@
 const transporter = require('../config/email');
+const crypto = require('crypto');
 
 // otp must be generated
 const generateOTP = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return crypto.randomInt(100000, 1000000).toString(); // using crypto to generate otp :  more secure
 }
 
 // send the generated otp to further verify 

@@ -61,9 +61,8 @@ const register =  async (req, res) => {
             });
 
 
-        return res.status(200).json({
+        return res.status(201).json({
             message: "User created successfully : verify otp to connect wallet",
-            token, // send token with the response
             user: {
                 id: user._id,
                 name: user.name,
