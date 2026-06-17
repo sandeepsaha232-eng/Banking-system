@@ -1,4 +1,4 @@
-const BASE_URL = 'http://127.0.0.1:3000/api';
+const BASE_URL = 'https://gbi-0y3t.onrender.com/api'
 
 // central API request : all the request will be sent through this API
 
