@@ -66,7 +66,7 @@ const deposit = async (req, res) => {
                 $inc: { balance: amount },
                 $push: { transactions: depositTransaction._id }
             },
-            { new: true, session }
+            { returnDocument : 'after', session }
         );
 
         if (!updatedWallet) {
