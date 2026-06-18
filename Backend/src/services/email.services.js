@@ -1,11 +1,8 @@
-const transporter = require('../config/email');
+const sendMail = require('../config/email');
 
 const transactionMail = async ({to,subject,amount,type})=>{
-    
-    // dummy boiler plate for further additions of transaction mail
 
     const mailOptions = {
-        from: process.env.EMAIL,
         to: to,
         subject: subject,
         html: `
@@ -19,16 +16,13 @@ const transactionMail = async ({to,subject,amount,type})=>{
             </div>
         `
     }
-
     try{
 
-        await transporter.sendMail(mailOptions);
+        await sendMail(mailOptions);
         console.log("transaction alert sent");
 
     } catch(err){
-
         console.error(`Error sending email :  ${err.message}`);
-    
     }
 
 }
@@ -53,14 +47,10 @@ const loginMail = async(to,systemDetails)=>{
     }
 
     try{
-
-        await transporter.sendMail(mailOptions);
+        await sendMail(mailOptions);
         console.log("login alert sent");
-
     } catch(err){
-
         console.error(`Error sending email :  ${err.message}`);
-    
     }
 
 }
@@ -84,14 +74,10 @@ const depositMail = async(to,amount,time)=>{
     }
 
     try{
-
-        await transporter.sendMail(mailOptions);
+        await sendMail(mailOptions);
         console.log("deposit alert sent");
-
     } catch(err){
-
         console.log(`error sending email : ${err.message}`);
-
     }
 }
 

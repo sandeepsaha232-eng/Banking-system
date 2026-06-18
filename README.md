@@ -68,7 +68,7 @@ Banking-system/
 │   │
 │   └── js/
 │       ├── api.js          # base fetch wrapper, handles 401 globally
-│       ├── auth.js         # register, login, logout, verifyOtp, resendOtp
+│       ├── auth.js         # register, login, logout, verifyOtp, resendOtp (yet to be added)
 │       ├── wallet.js       # getBalance, topup
 │       ├── guard.js        # redirects to /login if not authenticated
 │       └── utils.js        # formatCurrency, showError, showSuccess

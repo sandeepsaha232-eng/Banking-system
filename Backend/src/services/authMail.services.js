@@ -1,4 +1,4 @@
-const transporter = require('../config/email');
+const sendMail = require('../config/email')
 const crypto = require('crypto');
 
 // otp must be generated
@@ -15,7 +15,6 @@ const sendOTPEmail = async (email, otp) => {
                             .join(' ');
 
     const mailOptions = {
-        from: process.env.EMAIL,
         to: email,
         subject: 'GBI: OTP for registration',
         html: `<h2>Your OTP for registration of GBI</h2> 
@@ -26,7 +25,7 @@ const sendOTPEmail = async (email, otp) => {
 
     try {
 
-        await transporter.sendMail(mailOptions);
+        await sendMail(mailOptions); // sending mail directly via brevo API
         console.log("otp sent");
 
     } catch (error) {
