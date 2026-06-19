@@ -1,4 +1,4 @@
-const BASE_URL = 'https://gbi-0y3t.onrender.com/api'
+const BASE_URL = 'https://gbi.nitishsingh.in/api'
 
 // central API request : all the request will be sent through this API
 
