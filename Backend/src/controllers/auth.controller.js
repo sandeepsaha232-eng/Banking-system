@@ -191,25 +191,19 @@ const login =  async (req,res)=>{
                  sameSite: 'none'
             });
 
-
+        // using usParser to get the device details
         const userAgent = req.headers['user-agent'];
         const device = (new uaParser(userAgent)).getResult();
 
         // using IP adress to get the location : rate limit is there on free tier, hence rate limiter has to be applied
-
-        // for testing
-        console.log('Raw req.ip:', req.ip);
-        console.log('X-Forwarded-For header:', req.headers['x-forwarded-for']);
-
         const getLocation = async (ip) => {
             try {
-                const apiRes = await fetch(`http://ip-api.com/json/${ip}`);
+                const apiRes = await fetch(`http://ip-api.com/json/${ip}`); // free API for IP tracing
                 const data = await apiRes.json();
-                console.log('ip-api full response:', data);   
-                return `${data.city}, ${data.regionName}, ${data.country}`;
+                return `${data.city}, ${data.regionName}, ${data.country}`; // giving the regiondetails
             } catch(err){
-                console.log('ip-api fetch error:', err.message);
-                return 'Unknown location';
+                console.log('error :' + err.message)
+                return 'Unknown location'; // if sone error occurs
             }
         };
 
