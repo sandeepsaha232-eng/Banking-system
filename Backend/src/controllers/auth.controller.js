@@ -57,7 +57,8 @@ const register =  async (req, res) => {
                  httpOnly: true ,
                  maxAge: 7 * 24 * 60 * 60 * 1000,
                  secure:true, // if samesite : none and this as false, then cookies get dropped from the req
-                 sameSite: 'none'
+                 sameSite: 'lax',
+                 domain : '.nitishsingh.in' // set the domain for the cookie 
             });
 
 
@@ -188,7 +189,8 @@ const login =  async (req,res)=>{
                  httpOnly: true ,
                  maxAge: 7 * 24 * 60 * 60 * 1000,
                  secure:true,
-                 sameSite: 'none'
+                 sameSite: 'lax',
+                 domain : '.nitishsingh.in' // set the domain, to get first-party cookies
             });
 
         // using usParser to get the device details
