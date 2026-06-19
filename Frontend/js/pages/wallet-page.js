@@ -60,21 +60,73 @@ function showTransactionHistory(transaction){
 
 document.getElementById('addFundsBtn').addEventListener('click',async ()=>{
     const amount = document.getElementById('amount').value.trim();
-
     if(!amount){
-        return alert('please enter the amount first !');
+        return showError('please enter the amount first !');
     }
-
+    
     if(amount>100000){
-        return alert('Dont be greedy 🙈');
+        return showError('Dont be greedy 🙈');
     }
     const res = await depositMoney(amount);
+
+    disableBtn(); // add funds cooldown
 
     if(res && res.success){
         balanceField.textContent = 'your current balance : ' + res.data.balance;
         balanceField.style.color = 'green';
     }
 
+    showSlip(res.data);
     showTransaction();
     showBalance();
+    document.getElementById('amount').value = '';
 })
+
+function disableBtn(){
+    document.getElementById('addFundsBtn').disabled = true;
+    setTimeout(()=>{
+        document.getElementById('addFundsBtn').disabled = false;
+    }, 30000);
+}
+
+
+function showError(message){ // show error message in popup
+    const slip = document.getElementById('transactionModal');
+    document.getElementById('modalContent').classList.add('error');
+    document.getElementById('modalDetails').innerHTML = `
+        <h3 style="color: rgba(149, 18, 18, 1);">Transaction Failed</h3>
+        <p>Error: ${message}</p>
+    `
+    slip.style.display = 'block';
+
+    const closeBtn = document.getElementById('closeModalBtn');
+
+    closeBtn.addEventListener('click', () => {
+        slip.style.display = 'none';
+        document.getElementById('modalContent').classList.remove('error');
+    });
+
+}
+
+function showSlip(data){
+
+    const slip = document.getElementById('transactionModal');
+
+    document.getElementById('modalContent').classList.add('success');
+    document.getElementById('modalDetails').innerHTML = `
+        <h3 style="color: rgba(3, 118, 53, 1);">Transaction Successful</h3>
+        <p>Amount: ${data.amount}</p>
+        <p>Current Balance: ${data.balance}</p>
+        <p>Description: Self deposit</p>
+        <p>Transaction Reference: ${data.txnRef}</p>
+    `
+    slip.style.display = 'block';
+
+    const closeBtn = document.getElementById('closeModalBtn');
+
+    closeBtn.addEventListener('click', () => {
+        slip.style.display = 'none';
+        document.getElementById('modalContent').classList.remove('success');
+
+    });
+}

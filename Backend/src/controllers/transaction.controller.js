@@ -87,7 +87,7 @@ const sendMoney = async (req, res) => {
             senderId,
             receiverId,
             type : 'debit',
-            date : time
+            date : new Date()
         })
 
         const receiveTransaction = new transaction({
@@ -98,7 +98,7 @@ const sendMoney = async (req, res) => {
             senderId,
             receiverId,
             type : 'credit',
-            date : time
+            date : new Date()
         })
 
         await sendTransaction.save({session});

@@ -85,7 +85,13 @@ const deposit = async (req, res) => {
 
         depositMail(email,amount,time);
 
-        return res.json({ balance: updatedWallet.balance });
+        return res.json({ 
+            balance: updatedWallet.balance,
+            amount,
+            txnRef,
+            type : 'deposit',
+            date : time
+         });
 
     } catch (error) {
         console.log(error)

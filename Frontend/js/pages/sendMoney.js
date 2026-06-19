@@ -12,6 +12,10 @@ document.getElementById('sendBtn').addEventListener('click', async () => {
 
     const response = await sendMoney(receiverEmail, amount, note);
     
+    document.getElementById('receiverEmail').value = ''
+    document.getElementById('amount').value = ''
+    document.getElementById('note').value = ''
+
     if(response && response.data.success){
         showSlip(response.data);
     }
@@ -41,7 +45,7 @@ function showError(message){ // show error message in popup
 function showSlip(data){
 
     const slip = document.getElementById('transactionModal');
-    console.log(slip);
+
     document.getElementById('modalContent').classList.add('success');
     document.getElementById('modalDetails').innerHTML = `
         <h3>Transaction Successful</h3>

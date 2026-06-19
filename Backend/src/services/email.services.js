@@ -38,7 +38,7 @@ const loginMail = async(to,systemDetails)=>{
         subject: "login detected",
         html : `<div style="font-family: Arial; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
                     <h2 style="color: #03a9f4;">login detected</h2>
-                    <p>Successfully logged in to your account at <span style="color: #03a9f4;">${systemDetails.time}</span> on <strong style="color: #bc03f4ff;">${systemDetails.browser}</strong></p>
+                    <p>Successfully logged in to your account on <span style="color: #03a9f4;">${systemDetails.time}</span> on <strong style="color: #bc03f4ff;">${systemDetails.browser}</strong></p>
                     <h3 style="color: #f4a803ff;">Device Details</h3>
                     <p>Device : ${systemDetails.device.device.model}</p>
                     <p>OS : ${systemDetails.device.os.name}</p>

@@ -18,7 +18,7 @@ const sendOTPEmail = async (email, otp) => {
         to: email,
         subject: 'GBI: OTP for registration',
         html: `<h2>Your OTP for registration of GBI</h2> 
-                <h2 style="color: #39c616ff;">These are for testing purpose only</h2>
+                <h2 style="color: #ff9100ff;">Use this OTP to verify your account</h2>
                 <div style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; color: #1e99fdff; text-align: center; font-size: 20px;">${otpstring}</div>
             `
     };

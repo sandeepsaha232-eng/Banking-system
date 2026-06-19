@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Send Money</title>
     <style>
         #transactionModal {
             display: none;
@@ -22,12 +22,12 @@
             width: 300px;
         }
         .success {
-            color: white;
-            background-color: #02aef2;
+            color: rgb(39, 39, 39);
+            background: linear-gradient(135deg, rgba(191, 234, 255, 0.92), rgba(224, 255, 224, 0.6));
         }
         .error {
-            color: white;
-            background-color: #ff4949;
+            color: rgb(39, 39, 39);
+            background: linear-gradient(135deg, rgba(255, 73, 73, 0.9),rgba(255, 224, 224, 0.7));
         }
     </style>
     <script src="./js/gaurd.js"></script>
@@ -41,7 +41,7 @@
             <input type="email" id="receiverEmail" required>
             <br>
             <label for="amount">Amount:</label><br>
-            <input type="text" id="amount" required>
+            <input type="number" id="amount" required>
             <br>
             <label for="note">Note:</label><br>
             <input type="text" id="note">

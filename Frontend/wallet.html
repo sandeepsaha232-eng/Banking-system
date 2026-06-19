@@ -41,6 +41,31 @@
             transform: scale(1.03);
             cursor: pointer;
         }
+
+        #transactionModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .modalContent {
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #ffffff;
+            border-radius: 20px;
+            width: 300px;
+        }
+        .success {
+            color: rgb(25, 30, 34);
+            background: linear-gradient(135deg, rgba(191, 234, 255, 0.92), rgba(224, 255, 224, 0.6));
+        }
+        .error {
+            color: rgb(25, 30, 34);
+            background: linear-gradient(135deg, rgba(255, 73, 73, 0.9),rgba(255, 224, 224, 0.7));
+        }
     </style>
 </head>
 <body>
@@ -60,9 +85,21 @@
             <div id="transactionHistory">
                 No transactions found.
             </div>
-
+            
         </div>
     </div>
+
+    <div id="transactionModal">
+        <div class="modalContent" id="modalContent">
+            <h3>Transaction Details</h3>
+
+            <div id="modalDetails"></div>
+            <br>
+
+            <button id="closeModalBtn">Close</button>
+        </div>
+    </div>
+
     <script src="./js/api.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/pages/wallet-page.js"></script>
