@@ -72,6 +72,12 @@ const sendMoney = async (req, res) => {
 
         const txnRef = `TXN${Date.now()}`
         const description = note || `Transaction successful`
+        
+        const time = new Date('en-IN',{
+                timeZone : 'Asia/Kolkata',
+                dateStyle : 'full',
+                timeStyle : 'medium'
+        })
 
         const sendTransaction = new transaction({
             walletId : senderWallet._id,
@@ -81,7 +87,7 @@ const sendMoney = async (req, res) => {
             senderId,
             receiverId,
             type : 'debit',
-            date : new Date('en-IN')
+            date : time
         })
 
         const receiveTransaction = new transaction({
@@ -92,7 +98,7 @@ const sendMoney = async (req, res) => {
             senderId,
             receiverId,
             type : 'credit',
-            date : new Date('en-IN')
+            date : time
         })
 
         await sendTransaction.save({session});
@@ -119,7 +125,7 @@ const sendMoney = async (req, res) => {
             subject: "Money Sent",
             amount: amount,
             type: 'debit',
-            time: new Date().toLocaleString('en-IN')
+            time: time
         });
 
         transactionMail({
@@ -127,7 +133,7 @@ const sendMoney = async (req, res) => {
             subject: "Money Received",
             amount: amount,
             type: 'credit',
-            time: new Date().toLocaleString('en-IN')
+            time: time
         });
 
         return res.status(200).json({

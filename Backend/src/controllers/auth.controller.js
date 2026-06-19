@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 const {sendOTPEmail,generateOTP} = require('../services/authMail.services');
 const {loginMail} = require('../services/email.services');
 const uaParser = require('ua-parser-js');
-const { get } = require('../routes/transaction.routes');
 
 
 const register =  async (req, res) => {
@@ -204,14 +203,19 @@ const login =  async (req,res)=>{
             
         };
 
-        console.log(getLocation);
+        const location = await getLocation(req.ip);
+        console.log(location);
 
         const systemDetails = {
             browser: device.browser,
             os: device.os,
             device: device,
-            location : getLocation(req.ip),
-            time : new Date().toLocaleString('en-IN') // Indian specific time
+            location: location,
+            time : new Date().toLocaleString('en-IN',{ // Indian specific time : render still gives UTC itself so specify the timezone 
+                timeZone : 'Asia/Kolkata',
+                dateStyle : 'full',
+                timeStyle : 'medium'
+            }) 
         }
 
         loginMail(user.email,systemDetails);

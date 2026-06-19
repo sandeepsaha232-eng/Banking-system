@@ -51,7 +51,6 @@ const loginMail = async(to,systemDetails)=>{
 
     try{
         await sendMail(mailOptions);
-        console.log("login alert sent");
     } catch(err){
         console.error(`Error sending email :  ${err.message}`);
     }
