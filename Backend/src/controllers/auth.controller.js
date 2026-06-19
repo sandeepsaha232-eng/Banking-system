@@ -207,7 +207,7 @@ const login =  async (req,res)=>{
                 const data = await apiRes.json();
                 console.log('ip-api full response:', data);   
                 return `${data.city}, ${data.regionName}, ${data.country}`;
-            } catch (err) {
+            } catch(err){
                 console.log('ip-api fetch error:', err.message);
                 return 'Unknown location';
             }
