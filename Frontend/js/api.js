@@ -14,11 +14,9 @@ async function request(path, options = {}) { // path will specify the url and op
 
         const data = await res.json();
 
-        if (res.status === 401) { // if there is any error fallback to login page
-            console.log(res);
+        if (res.status === 401) {
             sessionStorage.clear();
-            // window.location.href = './login.html';
-            return;
+            return { success: false, status: 401, data: { message: 'Session has expired, login again' } };
         }
 
         return { success: res.ok, status: res.status, data }; // if everything is okay return the data to the caller method of respective page

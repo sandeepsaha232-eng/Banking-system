@@ -73,7 +73,7 @@ const sendMoney = async (req, res) => {
         const txnRef = `TXN${Date.now()}`
         const description = note || `Transaction successful`
         
-        const time = new Date('en-IN',{
+        const time = new Date().toLocaleString('en-IN',{
                 timeZone : 'Asia/Kolkata',
                 dateStyle : 'full',
                 timeStyle : 'medium'
