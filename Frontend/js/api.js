@@ -1,5 +1,6 @@
-const BASE_URL = 'https://gbi.nitishsingh.in/api'
+// const BASE_URL = 'https://gbi.nitishsingh.in/api' // production
 
+const BASE_URL = 'http://localhost:3000/api' // development
 // central API request : all the request will be sent through this API
 
 async function request(path, options = {}) { // path will specify the url and options will specify the data to be sent to the backend
