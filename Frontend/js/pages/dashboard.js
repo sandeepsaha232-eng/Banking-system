@@ -1,7 +1,7 @@
 const email = sessionStorage.getItem('userEmail');
 
 document.getElementById('userEmail').textContent = email;
-document.getElementById('checkBalanceBtn').addEventListener('click', async () =>{
+document.getElementById('checkBalanceBtn').addEventListener('click', async () => {
 
     const balanceText = document.getElementById('balance');
 
@@ -9,18 +9,18 @@ document.getElementById('checkBalanceBtn').addEventListener('click', async () =>
 
     const balance = await checkBalance();
 
-    setTimeout(()=>{
-        if(balance && balance.success){ 
+    setTimeout(() => {
+        if (balance && balance.success) {
             balanceText.textContent = 'your current balance : ' + balance.data.balance;
-            balanceText.style.color = 'green';
+            balanceText.style.color = 'var(--secondry-color)';
         }
-        else{
+        else {
             balanceText.textContent = 'could not fetch the balance :' + balance.data.message;
             balanceText.style.color = 'red';
         }
-    },1500);
+    }, 1500);
 
-    
+
 })
 
 const history = async () => {
@@ -42,22 +42,22 @@ function showTransactionHistory(transaction) {
     transaction = transaction.transactions.toReversed();
     let count = 0;
     transaction.forEach(tx => {
-        if(count >= 7) return;
-        
+        if (count >= 7) return;
+
         const dateStr = new Date(tx.date).toLocaleDateString();
-        
+
         let cardClass, amountPrefix;
-        if(tx.type === 'credit'){
+        if (tx.type === 'credit') {
             cardClass = 'tx-credit';
             amountPrefix = '+';
-        } else if(tx.type === 'debit'){
+        } else if (tx.type === 'debit') {
             cardClass = 'tx-debit';
             amountPrefix = '-';
         } else {
             cardClass = 'tx-deposit';
             amountPrefix = '+';
         }
-        
+
         const li = document.createElement('li');
         li.innerHTML = `
             <div class="transaction-card ${cardClass}">
@@ -75,6 +75,6 @@ function showTransactionHistory(transaction) {
     });
 }
 
-document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+document.getElementById('logoutBtn').addEventListener('click', async () => {
     await logout();
 })

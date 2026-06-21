@@ -56,7 +56,7 @@ function showSlip(data){
     document.getElementById('modalContent').classList.add('success');
     document.getElementById('modalDetails').innerHTML = `
         <h3>Transaction Successful</h3>
-        <p>Amount: ${data.amount}</p>
+        <p>Amount: GC ${data.amount}</p>
         <p>Receiver: ${data.receiverEmail}</p>
         <p>Description: ${data.description}</p>
         <p>Transaction Reference: ${data.txnRef}</p>

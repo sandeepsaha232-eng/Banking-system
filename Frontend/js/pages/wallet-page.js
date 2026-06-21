@@ -8,7 +8,7 @@ async function showBalance(){
     const balance = await checkBalance();
     
     if(balance && balance.success){ 
-        balanceField.textContent = '$' + balance.data.balance;
+        balanceField.textContent = 'GC ' + balance.data.balance;
     }
     else{
         balanceField.textContent = 'Error';
@@ -57,7 +57,7 @@ function showTransactionHistory(transaction){
                     <span class="tx-desc">${tx.description || 'Transaction'}</span>
                 </div>
                 <div class="tx-right">
-                    <span class="tx-amount">${amountPrefix}${tx.amount}</span>
+                    <span class="tx-amount">${amountPrefix}GC ${tx.amount}</span>
                     <div class="tx-date">${dateStr}</div>
                 </div>
             </div>`;
@@ -78,7 +78,7 @@ document.getElementById('addFundsBtn').addEventListener('click',async ()=>{
     disableBtn(); // add funds cooldown
 
     if(res && res.success){
-        balanceField.textContent = '$' + res.data.balance;
+        balanceField.textContent = 'GC ' + res.data.balance;
     }
 
     showSlip(res.data);
@@ -120,8 +120,8 @@ function showSlip(data){
     document.getElementById('modalContent').classList.add('success');
     document.getElementById('modalDetails').innerHTML = `
         <h3 style="color: rgba(3, 118, 53, 1);">Transaction Successful</h3>
-        <p>Amount: ${data.amount}</p>
-        <p>Current Balance: ${data.balance}</p>
+        <p>Amount: GC ${data.amount}</p>
+        <p>Current Balance: GC ${data.balance}</p>
         <p>Description: Self deposit</p>
         <p>Transaction Reference: ${data.txnRef}</p>
     `
