@@ -12,7 +12,7 @@ document.getElementById('checkBalanceBtn').addEventListener('click', async () =>
     setTimeout(()=>{
         if(balance && balance.success){ 
             balanceText.textContent = 'your current balance : π' + balance.data.balance;
-            balanceText.style.color = 'var(--text-light)';
+            balanceText.style.color = 'aliceblue';
         }
         else{
             balanceText.textContent = 'could not fetch the balance :' + balance.data.message;
