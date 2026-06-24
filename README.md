@@ -69,9 +69,8 @@ Banking-system/
 │   └── js/
 │       ├── api.js          # base fetch wrapper, handles 401 globally
 │       ├── auth.js         # register, login, logout, verifyOtp, resendOtp (yet to be added)
-│       ├── wallet.js       # getBalance, topup
 │       ├── guard.js        # redirects to /login if not authenticated
-│       └── utils.js        # formatCurrency, showError, showSuccess
+│       └── utils.js        # transaction history, transactions, balance
 │       │ 
 │       │
 │       └── pages/      # JS logic of all the pages
@@ -115,11 +114,11 @@ npm install
 Copy `.env.example` to `.env` and fill in your values:
 
 ```env
-PORT=3000
-JWT_SECRET=your_jwt_secret_key
-MONGODB_URI=your_mongodb_connection_string
-CLIENT_ORIGIN=frontend_url
-BREVO_API_KEY=your_brevo_api_key
+PORT= 3000
+JWT_SECRET= your_jwt_secret
+MONGODB_URI= your_mongodb_uri
+EMAIL= your_mail_for_brevo_sender
+BREVO_API_KEY= your_BREVO_api_key
 ```
 
 > to setup brevo credentials : www.brevo.com
@@ -200,6 +199,7 @@ Unverified users are automatically deleted from the database after 10 minutes vi
 | `JWT_SECRET` | Secret key for signing JWTs |
 | `MONGODB_URI` | MongoDB connection string |
 | `CLIENT_ORIGIN` | Frontend URL |
+| `EMAIL` | BREVO sender email |
 | `BREVO_API_KEY` | Brevo API Key |
 
 ---

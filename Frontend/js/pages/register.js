@@ -16,6 +16,10 @@ document.getElementById('registerBtn').addEventListener('click',async ()=>{
         sessionStorage.setItem('otpEmail',email);  // storing userEmail in session storage to further verify the otp
         window.location.href = './verify-otp.html';
     }
+    else if(res.data.message == 'User already exists'){
+        alert('User already exist, redirecting to login page');
+        window.location.href = './login.html';
+    }
     else{
         alert('error: ' + res.data.message);
     }
